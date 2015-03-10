@@ -4,16 +4,17 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
-
 import java.util.ArrayList;
 import java.util.List;
+import org.json.JSONArray;
+import org.json.JSONException;
 
-
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements MongoAdapter {
     /** The request code used by this application for voice command */
     private static final int SPEECH_REQUEST_CODE = 0;
 
@@ -45,6 +46,7 @@ public class MainActivity extends Activity {
 
     /** A list of all Notify details */
     private List<String> voiceNotifyDetails = new ArrayList<>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,7 +90,6 @@ public class MainActivity extends Activity {
         voiceNotifyDetails.add("here");
         voiceNotifyDetails.add("can't come");
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -212,14 +213,11 @@ public class MainActivity extends Activity {
      * @param command the command body
      * @return whether or not a valid command was identified
      */
-    private boolean interpretCommand(CommandOptions cType, String command)
-    {
+    private boolean interpretCommand(CommandOptions cType, String command) {
         Toast.makeText(this, command, Toast.LENGTH_LONG).show();
 
-        switch(cType)
-        {
-            case LOCATION:
-            {
+        switch (cType) {
+            case LOCATION: {
                 for (String option : voiceLocationDetails) {
                     if (command.toLowerCase().contains(option)) {
                         // Location request
@@ -231,8 +229,7 @@ public class MainActivity extends Activity {
                 break;
             }
 
-            case TIME:
-            {
+            case TIME: {
                 for (String option : voiceTimeDetails) {
                     if (command.toLowerCase().contains(option)) {
                         // Location request
@@ -244,8 +241,7 @@ public class MainActivity extends Activity {
                 break;
             }
 
-            case LIKES:
-            {
+            case LIKES: {
                 for (String option : voiceLikesDetails) {
                     if (command.toLowerCase().contains(option)) {
                         // Location request
@@ -257,8 +253,7 @@ public class MainActivity extends Activity {
                 break;
             }
 
-            case NOTIFY:
-            {
+            case NOTIFY: {
                 for (String option : voiceNotifyDetails) {
                     if (command.toLowerCase().contains(option)) {
                         // Location request
@@ -270,12 +265,27 @@ public class MainActivity extends Activity {
                 break;
             }
 
-            default:
-            {
+            default: {
                 // We should never get here
             }
         }
 
         return false;
+    }
+
+    public void getName( View v )
+    {
+        Mongo.get( this, "users", 1 );
+    }
+
+    @Override
+    public void processResult(String result) {
+        Profile p = null;
+        try{
+            p = new Profile( new JSONArray(result).getJSONObject(0) );
+        }catch( JSONException e ){
+            Log.d( "ProcessResult", e.getLocalizedMessage() );
+        }
+        Toast.makeText( this, p.getName(), Toast.LENGTH_LONG ).show();
     }
 }
