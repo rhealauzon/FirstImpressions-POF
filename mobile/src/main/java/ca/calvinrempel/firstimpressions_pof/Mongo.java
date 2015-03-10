@@ -21,7 +21,6 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.net.URLEncoder;
 
 /**
@@ -50,12 +49,10 @@ public class Mongo {
 
 
     /**
-     * Execute an HTTP GET request as a separate thread using an AsyncTask
-     * GET requests are used to retrieve documents
-     *
-     * @param context MongoAdapter Interface to be used as context for the request
-     * @param collection Name of the collection to retrieve from
-     * @param query Limit the returned documents to those matching the properties of query
+     * Get the document with the given id from the given collection.
+     * @param context class with processResult() method to handle result
+     * @param collection collection to search
+     * @param id unique id of document
      */
     public static void get( MongoAdapter context, String collection, int id  )
     {
@@ -65,6 +62,7 @@ public class Mongo {
                     + DB_NAME
                     + "/collections/" + collection + "?"
                     + URLEncoder.encode("q={\"_id\":\"" + id + "\"}", "UTF-8")
+                    + "&fo=true"
                     + "&apiKey=" + API_KEY;
         }
         catch( UnsupportedEncodingException e){
@@ -74,14 +72,19 @@ public class Mongo {
         new GetTask( context ).execute(url);
     }
 
-    public static void get( MongoAdapter context, String collection, Profile p )
+    /**
+     * Get the meetings pertaining to the given profile
+     * @param context context containing the processResult() method to handle the result
+     * @param p profile of person whose meetings should be returned
+     */
+    public static void getMeetings( MongoAdapter context, Profile p )
     {
         String url = "";
         try {
             url = BASE_URL
                     + DB_NAME
-                    + "/collections/" + collection + "?"
-                    + URLEncoder.encode("q={\"users\":" + p.getId() + "}", "UTF-8")
+                    + "/collections/dates?"
+                    + URLEncoder.encode("q={\"users\":\"{$elemMatch\":{\"id\":" + p.getId() + "}}}", "UTF-8")
                     + "&apiKey=" + API_KEY;
         }
         catch( UnsupportedEncodingException e){
@@ -91,6 +94,11 @@ public class Mongo {
         new GetTask( context ).execute(url);
     }
 
+    /**
+     * Get all documents from the given collection
+     * @param context context containing the processResult() method to handle the result
+     * @param collection collection to search
+     */
     public static void get( MongoAdapter context, String collection )
     {
        String url = BASE_URL
