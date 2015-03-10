@@ -64,4 +64,5 @@ public class Profile {
     public Calendar getBirthDate(){ return birthDate; }
     public HashMap<String,TreeSet<String>> getLikes(){ return likes; }
     public URL getPicture(){ return picture; }
+    public int getId(){ return id; }
 }
