@@ -1,9 +1,91 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:orientation="vertical"
-    tools:context=".MainActivity" tools:deviceIds="wear_square">
+<android.support.wearable.view.BoxInsetLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@android:color/white"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:padding="15dp">
 
-    <TextView android:id="@+id/text" android:layout_width="wrap_content"
-        android:layout_height="wrap_content" android:text="@string/hello_square" />
-</LinearLayout>
+    <ScrollView android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <FrameLayout
+            android:layout_gravity="center_horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="5dp"
+            app:layout_box="all">
+
+                <RelativeLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent">
+
+                <LinearLayout
+                    android:id="@+id/bio"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="10px">
+
+                    <ImageView
+                        android:layout_width="0px"
+                        android:id="@+id/circularImage"
+                        android:src="@drawable/tempprofile"
+                        android:layout_weight="0.5"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/rounded_frame"
+                        android:adjustViewBounds="true"
+                        android:scaleType="fitCenter"/>
+
+                    <ImageButton
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/imageButton"
+                        android:adjustViewBounds="true"
+                        android:scaleType="fitStart"
+                        android:background="@android:drawable/ic_btn_speak_now"
+                        android:layout_weight="0.5" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_gravity="center_horizontal"
+                    android:orientation="vertical"
+                    android:layout_below="@+id/bio"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                <Button
+                    android:gravity="center"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:text="@string/dateInfo"
+                    android:background="@drawable/blue_rounded"
+                    android:textColor="@android:color/white"
+                    android:onClick="dateInfo"
+                    android:layout_marginBottom="10px"/>
+
+                <Button
+                    android:gravity="center"
+                    android:layout_height="wrap_content"
+                    android:layout_width="fill_parent"
+                    android:text="@string/contactInfo"
+                    android:background="@drawable/blue_rounded"
+                    android:textColor="@android:color/white"
+                    android:onClick="contactInfo"
+                    android:layout_marginBottom="10px"
+                   />
+
+                <Button
+                    android:gravity="center"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:text="@string/likes"
+                    android:onClick="likes"
+                    android:background="@drawable/blue_rounded"
+                    android:textColor="@android:color/white"
+                    android:layout_marginBottom="10px"/>
+                </LinearLayout>
+            </RelativeLayout>
+        </FrameLayout>
+    </ScrollView>
+</android.support.wearable.view.BoxInsetLayout>
