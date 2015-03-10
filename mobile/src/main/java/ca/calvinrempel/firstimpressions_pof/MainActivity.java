@@ -63,7 +63,7 @@ public class MainActivity extends Activity
                 .addApi(Wearable.API)
                 .build();
 
-        googleClient.blockingConnect();
+        googleClient.connect();
 
         // Set up Location options
         voiceLocationOptions.add("what location");
