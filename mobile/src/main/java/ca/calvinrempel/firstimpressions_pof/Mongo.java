@@ -21,6 +21,7 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.net.URLEncoder;
 
 /**
@@ -44,8 +45,9 @@ import java.net.URLEncoder;
 public class Mongo {
 
     private static final String BASE_URL = "https://api.mongolab.com/api/1/databases/";
-    private static final String API_KEY = "bup2ZBWGDC-IlRrpRsjTtJqiM_QKSmKa\n";
+    private static final String API_KEY = "bup2ZBWGDC-IlRrpRsjTtJqiM_QKSmKa";
     private static final String DB_NAME = "sandbox";
+
 
     /**
      * Execute an HTTP GET request as a separate thread using an AsyncTask
@@ -55,23 +57,19 @@ public class Mongo {
      * @param collection Name of the collection to retrieve from
      * @param query Limit the returned documents to those matching the properties of query
      */
-    public static void get( MongoAdapter context, String collection, JSONObject query  )
+    public static void get( MongoAdapter context, String collection, int id  )
     {
-        String url = BASE_URL
-                + DB_NAME
-                + "/collections/" + collection + "?";
-
-        if ( query != null )
-        {
-            try{
-                url += "q=" + URLEncoder.encode( query.toString(), "UTF-8" ) + "&";
-            }catch ( UnsupportedEncodingException e )
-            {
-                Log.d( "URLEncoder", e.getLocalizedMessage() );
-            }
+        String url = "";
+        try {
+            url = BASE_URL
+                    + DB_NAME
+                    + "/collections/" + collection + "?"
+                    + URLEncoder.encode("q={\"_id\":\"" + id + "\"}", "UTF-8")
+                    + "&apiKey=" + API_KEY;
         }
-
-        url += "apiKey=" + API_KEY;
+        catch( UnsupportedEncodingException e){
+            Log.d( "URL", e.getLocalizedMessage() );
+        }
         Log.d( "URL", url );
         new GetTask( context ).execute(url);
     }

@@ -19,9 +19,10 @@ public class Profile {
     // List of likes a profile contains
     public static final String[] LIKES = { "movies", "tv", "music", "books", "food" };
 
+    private int id;
     private String name; // Full name of user
     private String gender; // Gender of user 'male' or 'female'
-    private Calendar birthDate; // Date of birth in YYYY-MM-DD formate
+    private Calendar birthDate; // Date of birth in YYYY-MM-DD format
     private HashMap<String, TreeSet<String>> likes; // List of likes mapped to each type of like
     private URL picture; // URL to a picture of the user
 
@@ -33,6 +34,7 @@ public class Profile {
         birthDate = Calendar.getInstance();
         likes = new HashMap<String, TreeSet<String>>();
         try{
+            id = obj.getInt("_id");
             name = obj.getString("name");
             gender = obj.getString("gender");
             date = obj.getString( "birthdate" ).split("-");
@@ -57,4 +59,9 @@ public class Profile {
         }
     }
 
+    public String getName(){ return name; }
+    public String getGender(){ return gender; }
+    public Calendar getBirthDate(){ return birthDate; }
+    public HashMap<String,TreeSet<String>> getLikes(){ return likes; }
+    public URL getPicture(){ return picture; }
 }
