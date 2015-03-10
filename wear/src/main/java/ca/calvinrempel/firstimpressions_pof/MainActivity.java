@@ -35,10 +35,6 @@ public class MainActivity extends Activity {
      */
     public void dateInfo(View v)
     {
-        Intent i = new Intent(this, ContactInfo.class);
-        startActivity(i);
-
-        return;
     }
 
     /**
@@ -47,7 +43,10 @@ public class MainActivity extends Activity {
      */
     public void contactInfo (View v)
     {
+        Intent i = new Intent(this, ContactInfo.class);
+        startActivity(i);
 
+        return;
     }
 
     /**
