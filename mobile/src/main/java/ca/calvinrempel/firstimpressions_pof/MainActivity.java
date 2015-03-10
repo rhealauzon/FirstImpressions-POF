@@ -2,11 +2,17 @@ package ca.calvinrempel.firstimpressions_pof;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Toast;
+
+import org.json.JSONArray;
+import org.json.JSONException;
 
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements MongoAdapter {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,5 +41,21 @@ public class MainActivity extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void getName( View v )
+    {
+        Mongo.get( this, "users", 1 );
+    }
+
+    @Override
+    public void processResult(String result) {
+        Profile p = null;
+        try{
+            p = new Profile( new JSONArray(result).getJSONObject(0) );
+        }catch( JSONException e ){
+            Log.d( "ProcessResult", e.getLocalizedMessage() );
+        }
+        Toast.makeText( this, p.getName(), Toast.LENGTH_LONG ).show();
     }
 }
