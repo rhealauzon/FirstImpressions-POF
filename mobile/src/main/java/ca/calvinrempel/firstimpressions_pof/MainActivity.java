@@ -10,13 +10,20 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.wearable.Wearable;
 import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends Activity implements MongoAdapter {
+public class MainActivity extends Activity implements MongoAdapter
+{
+
+    private GoogleApiClient googleClient;
+    private FencedMeetingManager meetingManager;
+
     /** The request code used by this application for voice command */
     private static final int SPEECH_REQUEST_CODE = 0;
 
@@ -56,6 +63,14 @@ public class MainActivity extends Activity implements MongoAdapter {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        meetingManager = null;
+
+        googleClient = new GoogleApiClient.Builder(this)
+                .addApi(Wearable.API)
+                .build();
+
+        googleClient.blockingConnect();
+
 
         // Set up Location options
         voiceLocationOptions.add("what location");
@@ -95,6 +110,7 @@ public class MainActivity extends Activity implements MongoAdapter {
         voiceNotifyDetails.add("can't come");
     }
 
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -115,6 +131,38 @@ public class MainActivity extends Activity implements MongoAdapter {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * Implement the behaviour that occurs when the user enters or exits, or state changes
+     */
+    private class GeofenceEventListener implements GeofenceListenerCallbacks
+    {
+
+        @Override
+        public void onEnter(String fenceId) {
+
+        }
+
+        @Override
+        public void onExit(String fenceId) {
+
+        }
+
+        @Override
+        public void onConnected() {
+
+        }
+
+        @Override
+        public void onDisconnected() {
+
+        }
+
+        @Override
+        public void onError() {
+
+        }
     }
 
     /**
