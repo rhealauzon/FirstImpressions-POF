@@ -70,6 +70,44 @@ public class MainActivity extends Activity implements MongoAdapter
                 .build();
 
         googleClient.blockingConnect();
+
+
+        // Set up Location options
+        voiceLocationOptions.add("what location");
+        voiceLocationOptions.add("where");
+        voiceLocationOptions.add("what place");
+
+        // Set up Time options
+        voiceTimeOptions.add("what time");
+        voiceTimeOptions.add("when");
+
+        // Set up Likes options
+        voiceLikesOptions.add("favourite");
+        voiceLikesOptions.add("like");
+        voiceLikesOptions.add("enjoy");
+
+        // Set up Notify options
+        voiceNotifyOptions.add("tell");
+        voiceNotifyOptions.add("message");
+        voiceNotifyOptions.add("say");
+
+        // Set up Location details
+        voiceLocationDetails.add("date");
+
+        // Set up Time details
+        voiceTimeDetails.add("date");
+
+        // Set up Likes details
+        voiceLikesDetails.add("book");
+        voiceLikesDetails.add("music");
+        voiceLikesDetails.add("tv");
+        voiceLikesDetails.add("movie");
+        voiceLikesDetails.add("food");
+
+        // Set up Notify details
+        voiceNotifyDetails.add("late");
+        voiceNotifyDetails.add("here");
+        voiceNotifyDetails.add("can't come");
     }
 
 
