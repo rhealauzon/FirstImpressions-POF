@@ -16,10 +16,12 @@ import java.util.List;
  * Created by Nav on 3/10/2015.
  */
 public class Meeting {
+
+    private String id;
     private Calendar time;
     private LatLng place;
-    private int user1;
-    private int user2;
+    private User user1;
+    private User user2;
 
     public Meeting( JSONObject obj )
     {
@@ -28,6 +30,7 @@ public class Meeting {
         JSONArray loc;
         JSONArray users;
         try {
+            id = obj.getJSONObject("_id").getString("$oid");
             loc = obj.getJSONArray("location");
             place = new LatLng( loc.getDouble(0), loc.getDouble(1));
             dateTime = obj.getString( "time" ).split( "-" );
@@ -39,11 +42,79 @@ public class Meeting {
                     Integer.parseInt(dateTime[4])     // Minute
             );
             users = obj.getJSONArray( "users" );
-            user1 = users.getInt(0);
-            user2 = users.getInt(1);
+            user1 = new User( users.getJSONObject(0) );
+            user2 = new User( users.getJSONObject(1) );
         }catch ( JSONException e ){
             Log.d( "Meeting Constructor", e.getLocalizedMessage() );
         }
+    }
+
+    public void setNearby( int id, boolean near )
+    {
+        if( user1.id == id )
+            user1.nearby = near;
+        else if( user2.id == id )
+            user2.nearby = near;
+        else
+            throw new IllegalArgumentException( "User id is not going on this date" );
+    }
+
+    public void setArrived( int id, boolean arrive )
+    {
+        if( user1.id == id )
+            user1.arrived = arrive;
+        else if( user2.id == id )
+            user2.arrived = arrive;
+        else
+            throw new IllegalArgumentException( "User id is not going on this date" );
+    }
+
+    public JSONObject toJSON()
+    {
+        JSONObject obj = new JSONObject();
+        JSONObject temp;
+        JSONArray tempArr;
+        String date;
+        try{
+            // put the _id
+            temp = new JSONObject();
+            temp.put( "$oid", id );
+            obj.put("_id", temp );
+
+            // put the place
+            tempArr = new JSONArray();
+            tempArr.put( place.latitude );
+            tempArr.put( place.longitude );
+            obj.put( "location", tempArr );
+
+            // put the date/time
+            date = time.get( Calendar.YEAR ) + "-"
+                    + (time.get( Calendar.MONTH )+1) + "-"
+                    + time.get( Calendar.DAY_OF_MONTH ) + "-"
+                    + time.get( Calendar.HOUR_OF_DAY ) + "-"
+                    + time.get( Calendar.MINUTE );
+            obj.put( "time", date );
+
+            // put the users
+            tempArr = new JSONArray();
+            tempArr.put( user1.toJSON() );
+            tempArr.put( user2.toJSON() );
+            obj.put( "users", tempArr );
+        }catch (JSONException e){
+            Log.d( "Meeting.toJSON", e.getLocalizedMessage() );
+        }
+        return obj;
+    }
+
+    public String getId(){ return id; }
+    public Calendar getTime(){ return time; }
+    public LatLng getPlace(){ return place; }
+    public User[] getUsers()
+    {
+        User[] result = new User[2];
+        result[0] = user1;
+        result[1] = user2;
+        return result;
     }
 
     public static List<Meeting> getMeetings ( JSONArray arr )
@@ -57,5 +128,36 @@ public class Meeting {
             Log.d( "getMeetings", e.getLocalizedMessage() );
         }
         return results;
+    }
+
+    private class User
+    {
+        public int id;
+        public boolean arrived;
+        public boolean nearby;
+
+        public User( JSONObject obj )
+        {
+            try {
+                id = obj.getInt( "id" );
+                arrived = obj.getBoolean("arrived");
+                nearby = obj.getBoolean("nearby");
+            }catch (JSONException e){
+                Log.d( "User", e.getLocalizedMessage() );
+            }
+        }
+
+        public JSONObject toJSON()
+        {
+            JSONObject obj = new JSONObject();
+            try {
+                obj.put("id", id);
+                obj.put("nearby", nearby);
+                obj.put("arrived", arrived);
+            }catch (JSONException e){
+                Log.d( "User.toJSON", e.getLocalizedMessage() );
+            }
+            return obj;
+        }
     }
 }

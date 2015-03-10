@@ -1,0 +1,18 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="?android:attr/listPreferredItemHeight"
+    android:orientation="horizontal">
+
+    <TextView
+        android:gravity="center"
+        android:id="@+id/textView"
+        android:layout_width="0dp"
+        android:layout_weight="0.7"
+        android:layout_height="fill_parent"
+        android:textColor="@color/field_colors"
+        android:ellipsize="marquee"
+        android:singleLine="true"
+        android:text="A Thing I like!"
+        android:textSize="12sp" />
+
+</LinearLayout>

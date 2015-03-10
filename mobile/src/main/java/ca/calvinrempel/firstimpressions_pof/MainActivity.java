@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,7 +15,15 @@ import org.json.JSONException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.wearable.Wearable;
+
+
 public class MainActivity extends Activity implements MongoAdapter {
+
+    private GoogleApiClient googleClient;
+    private FencedMeetingManager meetingManager;
+
     /** The request code used by this application for voice command */
     private static final int SPEECH_REQUEST_CODE = 0;
 
@@ -58,11 +65,17 @@ public class MainActivity extends Activity implements MongoAdapter {
     /** A list of all Notify details */
     private List<String> voiceNotifyDetails = new ArrayList<>();
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        meetingManager = null;
+
+        googleClient = new GoogleApiClient.Builder(this)
+                .addApi(Wearable.API)
+                .build();
+
+        googleClient.connect();
 
         // Create the waiting service intent
         Intent msgIntent = new Intent(this, WaitLocationService.class);
@@ -111,6 +124,7 @@ public class MainActivity extends Activity implements MongoAdapter {
         voiceNotifyDetails.add("can't come");
     }
 
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -131,6 +145,38 @@ public class MainActivity extends Activity implements MongoAdapter {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * Implement the behaviour that occurs when the user enters or exits, or state changes
+     */
+    private class GeofenceEventListener implements GeofenceListenerCallbacks
+    {
+
+        @Override
+        public void onEnter(String fenceId) {
+
+        }
+
+        @Override
+        public void onExit(String fenceId) {
+
+        }
+
+        @Override
+        public void onConnected() {
+
+        }
+
+        @Override
+        public void onDisconnected() {
+
+        }
+
+        @Override
+        public void onError() {
+
+        }
     }
 
     /**
@@ -291,21 +337,5 @@ public class MainActivity extends Activity implements MongoAdapter {
         }
 
         return false;
-    }
-
-    public void getName( View v )
-    {
-        Mongo.get( this, "users", 1 );
-    }
-
-    @Override
-    public void processResult(String result) {
-        Profile p = null;
-        try{
-            p = new Profile( new JSONArray(result).getJSONObject(0) );
-        }catch( JSONException e ){
-            Log.d( "ProcessResult", e.getLocalizedMessage() );
-        }
-        Toast.makeText( this, p.getName(), Toast.LENGTH_LONG ).show();
     }
 }

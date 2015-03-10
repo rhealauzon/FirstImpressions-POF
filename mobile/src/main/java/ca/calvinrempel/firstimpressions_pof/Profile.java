@@ -33,10 +33,12 @@ public class Profile {
         TreeSet<String> likeList;
         birthDate = Calendar.getInstance();
         likes = new HashMap<String, TreeSet<String>>();
+        // Get the properties from the JSONObject
         try{
             id = obj.getInt("_id");
             name = obj.getString("name");
             gender = obj.getString("gender");
+            // Split the yyyy-mm-dd date format
             date = obj.getString( "birthdate" ).split("-");
             picture = new URL( obj.getString("picture") );
             birthDate.set(
@@ -44,6 +46,7 @@ public class Profile {
                     Integer.parseInt(date[1])-1, // Month is 0 based
                     Integer.parseInt(date[2])
             );
+            // Populate the likes with values
             for (int i = 0; i < LIKES.length; i++) {
                 likeArray = obj.getJSONArray(LIKES[i]);
                 likeList = new TreeSet<String>();
