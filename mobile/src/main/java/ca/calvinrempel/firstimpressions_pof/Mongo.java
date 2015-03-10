@@ -50,7 +50,7 @@ public class Mongo {
 
     /**
      * Get the document with the given id from the given collection.
-     * @param context class with processResult() method to handle result
+     * @param context context containing the processResult() method to handle the result
      * @param collection collection to search
      * @param id unique id of document
      */
