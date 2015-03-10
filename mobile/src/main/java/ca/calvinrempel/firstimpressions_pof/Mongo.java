@@ -74,6 +74,32 @@ public class Mongo {
         new GetTask( context ).execute(url);
     }
 
+    public static void get( MongoAdapter context, String collection, Profile p )
+    {
+        String url = "";
+        try {
+            url = BASE_URL
+                    + DB_NAME
+                    + "/collections/" + collection + "?"
+                    + URLEncoder.encode("q={\"users\":" + p.getId() + "}", "UTF-8")
+                    + "&apiKey=" + API_KEY;
+        }
+        catch( UnsupportedEncodingException e){
+            Log.d( "URL", e.getLocalizedMessage() );
+        }
+        Log.d( "URL", url );
+        new GetTask( context ).execute(url);
+    }
+
+    public static void get( MongoAdapter context, String collection )
+    {
+       String url = BASE_URL
+                    + DB_NAME
+                    + "/collections/" + collection + "?"
+                    + "apiKey=" + API_KEY;
+        new GetTask( context ).execute(url);
+    }
+
     /**
      * Execute an HTTP POST request as a separate thread using an AsyncTask
      * POST requests are used to create new documents
