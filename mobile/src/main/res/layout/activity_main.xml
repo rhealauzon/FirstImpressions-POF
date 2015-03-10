@@ -14,21 +14,4 @@
         android:layout_height="wrap_content"
         android:onClick="startVoiceCommand" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Get User"
-        android:id="@+id/button"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
-        android:onClick="getUser"
-        android:singleLine="false" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Set Arrived"
-        android:id="@+id/button2"
-        android:onClick="getMeeting" />
-
 </LinearLayout>

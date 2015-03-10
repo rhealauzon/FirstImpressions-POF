@@ -62,8 +62,7 @@ public class Mongo {
                     + DB_NAME
                     + "/collections/" + collection + "?"
                     + URLEncoder.encode("q={\"_id\":\"" + id + "\"}", "UTF-8")
-                    + "&fo=true"
-                    + "&apiKey=" + API_KEY;
+                    + "&fo=true" + "&apiKey=" + API_KEY;
         }
         catch( UnsupportedEncodingException e){
             Log.d( "URL", e.getLocalizedMessage() );

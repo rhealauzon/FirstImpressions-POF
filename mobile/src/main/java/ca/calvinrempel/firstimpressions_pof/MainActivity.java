@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -12,13 +11,11 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.wearable.Wearable;
-import org.json.JSONArray;
-import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends Activity implements MongoAdapter
+public class MainActivity extends Activity
 {
 
     private GoogleApiClient googleClient;
@@ -56,9 +53,6 @@ public class MainActivity extends Activity implements MongoAdapter
     /** A list of all Notify details */
     private List<String> voiceNotifyDetails = new ArrayList<>();
 
-    /** Profile of the current active user */
-    private Profile user;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,7 +64,6 @@ public class MainActivity extends Activity implements MongoAdapter
                 .build();
 
         googleClient.connect();
-
 
         // Set up Location options
         voiceLocationOptions.add("what location");
@@ -323,43 +316,5 @@ public class MainActivity extends Activity implements MongoAdapter
         }
 
         return false;
-    }
-
-    public void getUser( View v )
-    {
-        Mongo.get( this, "users", 1 );
-    }
-
-    public void getMeeting( View v )
-    {
-        Mongo.get( this, "dates", user );
-    }
-
-    /**
-     * Process the result returned by the Mongo call
-     * @param result The result string returned by the HTTP request.
-     */
-    @Override
-    public void processResult(String result) {
-        if( user == null ) {
-            try {
-                user = new Profile(new JSONArray(result).getJSONObject(0));
-            } catch (JSONException e) {
-                Log.d("ProcessResult", e.getLocalizedMessage());
-            }
-            Toast.makeText(this, user.getName(), Toast.LENGTH_LONG).show();
-        }else
-        {
-            try{
-                Meeting m = new Meeting( new JSONArray(result).getJSONObject(0) );
-                m.setArrived( 1, true );
-                Mongo.post( new MongoAdapter() {
-                    @Override
-                    public void processResult(String result) { }
-                }, "dates", m.toJSON() );
-            } catch (JSONException e){
-                Log.d( "ProcessResult", e.getLocalizedMessage() );
-            }
-        }
     }
 }
