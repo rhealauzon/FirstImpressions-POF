@@ -69,7 +69,7 @@ public class MainActivity extends Activity implements MongoAdapter
                 .addApi(Wearable.API)
                 .build();
 
-        googleClient.blockingConnect();
+        googleClient.connect();
 
 
         // Set up Location options
