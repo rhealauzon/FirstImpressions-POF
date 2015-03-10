@@ -9,10 +9,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
-import java.util.ArrayList;
-import java.util.List;
+
 import org.json.JSONArray;
 import org.json.JSONException;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends Activity implements MongoAdapter {
     /** The request code used by this application for voice command */
@@ -47,6 +49,8 @@ public class MainActivity extends Activity implements MongoAdapter {
     /** A list of all Notify details */
     private List<String> voiceNotifyDetails = new ArrayList<>();
 
+    /** Profile of the current active user */
+    private Profile user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -273,19 +277,41 @@ public class MainActivity extends Activity implements MongoAdapter {
         return false;
     }
 
-    public void getName( View v )
+    public void getUser( View v )
     {
         Mongo.get( this, "users", 1 );
     }
 
+    public void getMeeting( View v )
+    {
+        Mongo.get( this, "dates", user );
+    }
+
+    /**
+     * Process the result returned by the Mongo call
+     * @param result The result string returned by the HTTP request.
+     */
     @Override
     public void processResult(String result) {
-        Profile p = null;
-        try{
-            p = new Profile( new JSONArray(result).getJSONObject(0) );
-        }catch( JSONException e ){
-            Log.d( "ProcessResult", e.getLocalizedMessage() );
+        if( user == null ) {
+            try {
+                user = new Profile(new JSONArray(result).getJSONObject(0));
+            } catch (JSONException e) {
+                Log.d("ProcessResult", e.getLocalizedMessage());
+            }
+            Toast.makeText(this, user.getName(), Toast.LENGTH_LONG).show();
+        }else
+        {
+            try{
+                Meeting m = new Meeting( new JSONArray(result).getJSONObject(0) );
+                m.setArrived( 1, true );
+                Mongo.post( new MongoAdapter() {
+                    @Override
+                    public void processResult(String result) { }
+                }, "dates", m.toJSON() );
+            } catch (JSONException e){
+                Log.d( "ProcessResult", e.getLocalizedMessage() );
+            }
         }
-        Toast.makeText( this, p.getName(), Toast.LENGTH_LONG ).show();
     }
 }
