@@ -18,6 +18,18 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".ContactInfo"
+            android:label="@string/title_activity_contact_info" >
+        </activity>
+        <activity
+            android:name=".Likes"
+            android:label="@string/title_activity_likes" >
+        </activity>
+        <activity
+            android:name=".LikesDetails"
+            android:label="@string/title_activity_likes_details" >
+        </activity>
     </application>
 
 </manifest>
