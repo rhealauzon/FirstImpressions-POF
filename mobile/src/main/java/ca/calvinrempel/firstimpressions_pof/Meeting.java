@@ -89,8 +89,8 @@ public class Meeting {
 
             // put the date/time
             date = time.get( Calendar.YEAR ) + "-"
-                    + time.get( Calendar.MONTH ) + "-"
-                    + (time.get( Calendar.DAY_OF_MONTH ) + 1) + "-"
+                    + (time.get( Calendar.MONTH )+1) + "-"
+                    + time.get( Calendar.DAY_OF_MONTH ) + "-"
                     + time.get( Calendar.HOUR_OF_DAY ) + "-"
                     + time.get( Calendar.MINUTE );
             obj.put( "time", date );
@@ -99,10 +99,22 @@ public class Meeting {
             tempArr = new JSONArray();
             tempArr.put( user1.toJSON() );
             tempArr.put( user2.toJSON() );
+            obj.put( "users", tempArr );
         }catch (JSONException e){
             Log.d( "Meeting.toJSON", e.getLocalizedMessage() );
         }
         return obj;
+    }
+
+    public String getId(){ return id; }
+    public Calendar getTime(){ return time; }
+    public LatLng getPlace(){ return place; }
+    public User[] getUsers()
+    {
+        User[] result = new User[2];
+        result[0] = user1;
+        result[1] = user2;
+        return result;
     }
 
     public static List<Meeting> getMeetings ( JSONArray arr )
