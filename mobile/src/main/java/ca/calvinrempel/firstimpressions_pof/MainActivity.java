@@ -9,14 +9,25 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
-import java.util.ArrayList;
-import java.util.List;
+
 import org.json.JSONArray;
 import org.json.JSONException;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends Activity implements MongoAdapter {
     /** The request code used by this application for voice command */
     private static final int SPEECH_REQUEST_CODE = 0;
+
+    /** The wait time before checking the nearby status of your date again */
+    private static final int NEARBY_WAIT = 10;
+
+    /** The wait time before checking the nearby status of your date again */
+    private static final int ARRIVAL_WAIT = 5;
+
+    /** The wait time before checking the nearby status of your date again */
+    private static final int TALKING_WAIT = 600;
 
     /** An enumerated list containing all possible voice command options */
     private enum CommandOptions {
@@ -52,6 +63,15 @@ public class MainActivity extends Activity implements MongoAdapter {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Create the waiting service intent
+        Intent msgIntent = new Intent(this, WaitLocationService.class);
+        msgIntent.putExtra("nearbyTime", NEARBY_WAIT);
+        msgIntent.putExtra("arrivalTime", ARRIVAL_WAIT);
+        msgIntent.putExtra("talkingTime", TALKING_WAIT);
+
+        // Start the waiting service
+        startService(msgIntent);
 
         // Set up Location options
         voiceLocationOptions.add("what location");
