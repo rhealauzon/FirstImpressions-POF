@@ -65,7 +65,6 @@ public class MainActivity extends Activity
 
         googleClient.blockingConnect();
 
-
         // Set up Location options
         voiceLocationOptions.add("what location");
         voiceLocationOptions.add("where");
