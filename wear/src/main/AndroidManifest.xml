@@ -3,10 +3,10 @@
     package="ca.calvinrempel.firstimpressions_pof" >
 
     <uses-feature android:name="android.hardware.type.watch" />
-
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.INTERNET" />
-
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.SEND_SMS"/>
+    
     <application
         android:allowBackup="true"
         android:icon="@drawable/fish"
