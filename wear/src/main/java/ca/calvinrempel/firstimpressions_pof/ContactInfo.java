@@ -20,8 +20,6 @@ public class ContactInfo extends Activity implements MongoAdapter {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact_info);
 
-        //fetch the user from the database
-        Mongo.get(this, "users", 1);
 
         TextView name = (TextView) findViewById(R.id.name);
         name.setText(name.getText() + user.getName());
