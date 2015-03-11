@@ -32,6 +32,7 @@ public class MainActivity extends Activity {
     /**
      * onClick listener for the date info button
      * @author: Rhea Lauzon
+     * @param v - The Calling view
      */
     public void dateInfo(View v)
     {
@@ -40,6 +41,7 @@ public class MainActivity extends Activity {
     /**
      * onClick listener for the contact info button
      * @author: Rhea Lauzon
+     * @param v  - The Calling view
      */
     public void contactInfo (View v)
     {
@@ -52,6 +54,7 @@ public class MainActivity extends Activity {
     /**
      * onClick listener for the likes button
      * @author: Rhea Lauzon
+     * @param v - The Calling view
      */
     public void likes(View v)
     {

@@ -2,16 +2,26 @@ package ca.calvinrempel.firstimpressions_pof;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
+
+import org.json.JSONArray;
+import org.json.JSONException;
 
 
-public class ContactInfo extends Activity {
+public class ContactInfo extends Activity implements MongoAdapter {
+    private Profile user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact_info);
+
+        //fetch the user from the database
+        Mongo.get(this, "users", 1);
+
     }
 
 
@@ -35,5 +45,41 @@ public class ContactInfo extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * @param result The result string returned by the HTTP request.
+     *               - Processes the MongoDB request
+     * @author Rhea Lauzon
+     */
+    public void processResult(String result) {
+        Profile p = null;
+        try {
+            p = new Profile(new JSONArray(result).getJSONObject(0));
+        } catch (JSONException e) {
+            Log.d("ProcessResult", e.getLocalizedMessage());
+            if (user == null) {
+                try {
+                    user = new Profile(new JSONArray(result).getJSONObject(0));
+                } catch (JSONException f) {
+                    Log.d("ProcessResult", f.getLocalizedMessage());
+                }
+                Toast.makeText(this, user.getName(), Toast.LENGTH_LONG).show();
+            } else {
+                try {
+                    Meeting m = new Meeting(new JSONArray(result).getJSONObject(0));
+                    m.setArrived(1, true);
+                    Mongo.post(new MongoAdapter() {
+                        @Override
+                        public void processResult(String result) {
+                        }
+                    }, "dates", m.toJSON());
+                } catch (JSONException g) {
+                    Log.d("ProcessResult", g.getLocalizedMessage());
+                }
+            }
+            Toast.makeText(this, p.getName(), Toast.LENGTH_LONG).show();
+
+        }
     }
 }
