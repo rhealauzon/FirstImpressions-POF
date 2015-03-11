@@ -6,21 +6,22 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.SEND_SMS"/>
-
+    
     <application
         android:allowBackup="true"
         android:icon="@drawable/fish"
         android:label="@string/app_name"
         android:theme="@android:style/Theme.DeviceDefault" >
-
-        <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version" />
-
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
 
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -36,7 +37,14 @@
             android:name=".LikesDetails"
             android:label="@string/title_activity_likes_details" >
         </activity>
+        <activity
+            android:name=".DateInfo"
+            android:label="@string/title_activity_date_info" >
+        </activity>
+        <activity
+            android:name=".Face"
+            android:label="@string/title_activity_face" >
+        </activity>
     </application>
-
 
 </manifest>
