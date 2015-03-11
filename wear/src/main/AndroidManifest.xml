@@ -41,6 +41,10 @@
             android:name=".DateInfo"
             android:label="@string/title_activity_date_info" >
         </activity>
+        <activity
+            android:name=".Face"
+            android:label="@string/title_activity_face" >
+        </activity>
     </application>
 
 </manifest>

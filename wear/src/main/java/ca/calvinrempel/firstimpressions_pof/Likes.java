@@ -23,7 +23,7 @@ public class Likes extends Activity {
         //get listView object from XML
         listView = (ListView) findViewById(R.id.likes_list);
 
-        String[] categories = new String[] {"Movies", "Books", "Songs" };
+        String[] categories = new String[] {"Movies", "Books", "Music", "Food", "Television" };
 
         //define a new adapter
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.list_item, R.id.textView, categories);

@@ -66,4 +66,15 @@ public class MainActivity extends Activity {
         startActivity(i);
     }
 
+    /**
+     * onClick listener for the photo displayed
+     * @author Rhea Lauzon
+     * @param v - Calling view
+     */
+    public void bigFace(View v)
+    {
+        Intent i = new Intent(this, Face.class);
+        startActivity(i);
+    }
+
 }
