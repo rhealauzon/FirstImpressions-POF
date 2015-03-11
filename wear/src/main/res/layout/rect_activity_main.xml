@@ -43,6 +43,7 @@
                         android:adjustViewBounds="true"
                         android:scaleType="fitStart"
                         android:background="@android:drawable/ic_btn_speak_now"
+                        android:onClick="startVoiceCommand"
                         android:layout_weight="0.5" />
 
                 </LinearLayout>
