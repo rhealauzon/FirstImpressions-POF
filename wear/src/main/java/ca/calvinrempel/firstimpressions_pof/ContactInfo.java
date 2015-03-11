@@ -19,14 +19,14 @@ public class ContactInfo extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact_info);
-        
+
         //fetch the user from the database
         Mongo.getProfile(
                 new MongoReceiver() {
                      @Override
                      public void process(JSONArray result) {
                          try {
-                             user = new Profile(new JSONArray(result).getJSONObject(0));
+                             user = new Profile( result.getJSONObject(0) );
                          } catch (JSONException f) {
                              Log.d("ProcessResult", f.getLocalizedMessage());
                          }
