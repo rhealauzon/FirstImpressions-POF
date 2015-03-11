@@ -291,7 +291,7 @@ public class MainActivity extends Activity {
                         // Location request
                         if (option.equals("date"))
                         {
-                            voiceIntent = new Intent(this, MainActivity.class);
+                            voiceIntent = new Intent(this, DateInfo.class);
                             startActivity(voiceIntent);
                         }
 
@@ -308,7 +308,7 @@ public class MainActivity extends Activity {
                         // Time request
                         if (option.equals("date"))
                         {
-                            voiceIntent = new Intent(this, MainActivity.class);
+                            voiceIntent = new Intent(this, DateInfo.class);
                             startActivity(voiceIntent);
                         }
 
