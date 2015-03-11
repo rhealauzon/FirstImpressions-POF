@@ -63,6 +63,7 @@
                     android:text="@string/dateInfo"
                     android:background="@drawable/blue_rounded"
                     android:textColor="@android:color/white"
+                    android:id="@+id/buttonDateInfo"
                     android:onClick="dateInfo"
                     android:layout_marginBottom="10px"/>
 
