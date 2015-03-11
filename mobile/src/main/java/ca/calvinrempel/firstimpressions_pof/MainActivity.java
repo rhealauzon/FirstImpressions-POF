@@ -7,10 +7,15 @@ import android.speech.RecognizerIntent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.wearable.Wearable;
+
+import org.json.JSONArray;
+import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -334,5 +339,51 @@ public class MainActivity extends Activity {
         }
 
         return false;
+    }
+
+    // SAMPLE CODE FOR GETTING A PROFILE BY ID
+    public void getProfile( View v )
+    {
+        // Get the id number from the EditText box
+        int id = Integer.parseInt(((EditText) findViewById(R.id.txtId)).getText().toString());
+
+        // Result TextView
+        final TextView resultText = (TextView)findViewById(R.id.txtResult);
+
+        // getProfile takes a handler and an integer ID
+        Mongo.getProfile(
+                // Anonymous inner class handler for result of Mongo call
+                new MongoReceiver() {
+                    @Override
+                    public void process(JSONArray result) {
+                        try {
+                            // Set the result as the first object in the returned array
+                            resultText.setText(result.getJSONObject(0).toString(2));
+                        }catch (JSONException e){}
+                    }
+                } ,id );
+    }
+
+    // SAMPLE CODE FOR GETTING A MEETING BY USER ID
+    public void getMeeting( View v )
+    {
+        // Get the id number from the EditText box
+        int id = Integer.parseInt(((EditText) findViewById(R.id.txtId)).getText().toString());
+
+        // Result TextView
+        final TextView resultText = (TextView)findViewById(R.id.txtResult);
+
+        // getMeetings takes a handler and an integer ID for the user you're searching for
+        Mongo.getMeetings(
+                // Anonymous inner class handler for result of Mongo call
+                new MongoReceiver() {
+                    @Override
+                    public void process(JSONArray result) {
+                        try {
+                            // Set the result as the first object in the returned array
+                            resultText.setText(result.getJSONObject(0).toString(2));
+                        }catch (JSONException e){}
+                    }
+                } ,id );
     }
 }
