@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 
 public class DateInfo extends Activity
@@ -14,6 +15,12 @@ public class DateInfo extends Activity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_date_info);
+
+        // Set custom fonts
+        FontManager.setFont(this, (TextView) findViewById(R.id.dateDetails), "biko.otf");
+        FontManager.setFont(this, (TextView) findViewById(R.id.where), "cicero.ttf");
+        FontManager.setFont(this, (TextView) findViewById(R.id.date), "cicero.ttf");
+        FontManager.setFont(this, (TextView) findViewById(R.id.time), "cicero.ttf");
 
     }
 
