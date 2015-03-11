@@ -13,14 +13,24 @@ import org.json.JSONException;
 
 
 public class ContactInfo extends Activity {
+
+    // You!
     private Profile user;
 
+    // Hot date you have coming up
+    private Meeting tryst;
+
+    // User you're on a date with
+    private Profile other;
+
+
+    //
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact_info);
 
-        //fetch the user from the database
+        //fetch the current user from the database
         Mongo.getProfile(
                 new MongoReceiver() {
                      @Override
@@ -28,7 +38,7 @@ public class ContactInfo extends Activity {
                          try {
                              user = new Profile( result.getJSONObject(0) );
                          } catch (JSONException f) {
-                             Log.d("ProcessResult", f.getLocalizedMessage());
+                             Log.d("GetProfile", f.getLocalizedMessage());
                          }
                          Toast.makeText(getBaseContext(), user.getName(), Toast.LENGTH_LONG).show();
                      }
@@ -37,6 +47,34 @@ public class ContactInfo extends Activity {
 
         TextView name = (TextView) findViewById(R.id.name);
         name.setText(name.getText() + user.getName());
+
+        // Get the meeting from the database
+        Mongo.getMeetings(
+                new MongoReceiver() {
+                    @Override
+                    public void process(JSONArray result) {
+                        try {
+                            tryst = new Meeting( result.getJSONObject(0) );
+                        } catch (JSONException f) {
+                            Log.d("GetMeetings", f.getLocalizedMessage());
+                        }
+                    }
+                }
+        , user.getId() );
+
+        // Get the other user from the database
+        Mongo.getProfile(
+                new MongoReceiver() {
+                    @Override
+                    public void process(JSONArray result) {
+                        try {
+                            other = new Profile( result.getJSONObject(0) );
+                        }catch (JSONException e){
+                            Log.d("GetProfile", e.getLocalizedMessage());
+                        }
+                    }
+                }
+        , tryst.getOther(user) );
 
     }
 

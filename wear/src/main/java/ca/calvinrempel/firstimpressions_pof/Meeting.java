@@ -88,9 +88,15 @@ public class Meeting {
 
     }
 
-
-
-
+    public int getOther( Profile p )
+    {
+        if( user1.id == p.getId() )
+            return user2.id;
+        else if( user2.id == p.getId() )
+            return user1.id;
+        else // We shouldn't get here
+            return 0;
+    }
 
     public JSONObject toJSON()
     {
