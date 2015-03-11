@@ -19,7 +19,7 @@ public class ContactInfo extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact_info);
-
+        
         //fetch the user from the database
         Mongo.getProfile(
                 new MongoReceiver() {

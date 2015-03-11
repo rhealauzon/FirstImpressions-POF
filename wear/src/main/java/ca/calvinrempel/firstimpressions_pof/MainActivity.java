@@ -7,6 +7,7 @@ import android.speech.RecognizerIntent;
 import android.support.wearable.view.WatchViewStub;
 import android.telephony.SmsManager;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -81,6 +82,9 @@ public class MainActivity extends Activity {
             public void onLayoutInflated(WatchViewStub stub)
             {
                 mTextView = (TextView) stub.findViewById(R.id.text);
+
+                // Set the custom fonts for this page
+                FontManager.setFont(stub.getContext(), (Button) findViewById(R.id.buttonDateInfo), "biko.otf");
             }
         });
 
@@ -138,6 +142,10 @@ public class MainActivity extends Activity {
      */
     public void dateInfo(View v)
     {
+        Intent i = new Intent(this, DateInfo.class);
+        startActivity(i);
+
+        return;
     }
 
     /**
@@ -164,6 +172,16 @@ public class MainActivity extends Activity {
         startActivity(i);
     }
 
+    /**
+     * onClick listener for the photo displayed
+     * @author Rhea Lauzon
+     * @param v - Calling view
+     */
+    public void bigFace(View v)
+    {
+        Intent i = new Intent(this, Face.class);
+        startActivity(i);
+    }
 
     /**
      * @author Chris Klassen
@@ -273,7 +291,7 @@ public class MainActivity extends Activity {
                         // Location request
                         if (option.equals("date"))
                         {
-                            voiceIntent = new Intent(this, MainActivity.class);
+                            voiceIntent = new Intent(this, DateInfo.class);
                             startActivity(voiceIntent);
                         }
 
@@ -290,7 +308,7 @@ public class MainActivity extends Activity {
                         // Time request
                         if (option.equals("date"))
                         {
-                            voiceIntent = new Intent(this, MainActivity.class);
+                            voiceIntent = new Intent(this, DateInfo.class);
                             startActivity(voiceIntent);
                         }
 
