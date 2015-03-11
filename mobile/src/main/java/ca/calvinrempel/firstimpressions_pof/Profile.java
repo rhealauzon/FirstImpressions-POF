@@ -6,6 +6,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Calendar;
@@ -15,7 +21,7 @@ import java.util.TreeSet;
 /**
  * Created by Nav on 3/10/2015.
  */
-public class Profile {
+public class Profile implements Serializable{
     
     // List of likes a profile contains
     public static final String[] LIKES = { "movies", "tv", "music", "books", "food" };
@@ -75,4 +81,17 @@ public class Profile {
     public HashMap<String,TreeSet<String>> getLikes(){ return likes; }
     public URL getPicture(){ return picture; }
     public int getId(){ return id; }
+
+    public static byte[] serialize(Profile obj) throws IOException {
+        ByteArrayOutputStream b = new ByteArrayOutputStream();
+        ObjectOutputStream o = new ObjectOutputStream(b);
+        o.writeObject(obj);
+        return b.toByteArray();
+    }
+
+    public static Profile deserialize(byte[] bytes) throws IOException, ClassNotFoundException {
+        ByteArrayInputStream b = new ByteArrayInputStream(bytes);
+        ObjectInputStream o = new ObjectInputStream(b);
+        return (Profile)o.readObject();
+    }
 }
