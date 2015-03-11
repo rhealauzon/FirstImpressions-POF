@@ -7,6 +7,7 @@ import android.speech.RecognizerIntent;
 import android.support.wearable.view.WatchViewStub;
 import android.telephony.SmsManager;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -81,6 +82,9 @@ public class MainActivity extends Activity {
             public void onLayoutInflated(WatchViewStub stub)
             {
                 mTextView = (TextView) stub.findViewById(R.id.text);
+
+                // Set the custom fonts for this page
+                FontManager.setFont(stub.getContext(), (Button) findViewById(R.id.buttonDateInfo), "biko.otf");
             }
         });
 
