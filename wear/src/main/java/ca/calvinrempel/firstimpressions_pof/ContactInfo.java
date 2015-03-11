@@ -12,17 +12,69 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 
-public class ContactInfo extends Activity implements MongoAdapter {
+public class ContactInfo extends Activity {
+
+    // You!
     private Profile user;
 
+    // Hot date you have coming up
+    private Meeting tryst;
+
+    // User you're on a date with
+    private Profile other;
+
+
+    //
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact_info);
 
+        //fetch the current user from the database
+        Mongo.getProfile(
+                new MongoReceiver() {
+                     @Override
+                     public void process(JSONArray result) {
+                         try {
+                             user = new Profile( result.getJSONObject(0) );
+                         } catch (JSONException f) {
+                             Log.d("GetProfile", f.getLocalizedMessage());
+                         }
+                         Toast.makeText(getBaseContext(), user.getName(), Toast.LENGTH_LONG).show();
+                     }
+                 }
+                ,1);
 
         TextView name = (TextView) findViewById(R.id.name);
         name.setText(name.getText() + user.getName());
+
+        // Get the meeting from the database
+        Mongo.getMeetings(
+                new MongoReceiver() {
+                    @Override
+                    public void process(JSONArray result) {
+                        try {
+                            tryst = new Meeting( result.getJSONObject(0) );
+                        } catch (JSONException f) {
+                            Log.d("GetMeetings", f.getLocalizedMessage());
+                        }
+                    }
+                }
+        , user.getId() );
+
+        // Get the other user from the database
+        Mongo.getProfile(
+                new MongoReceiver() {
+                    @Override
+                    public void process(JSONArray result) {
+                        try {
+                            other = new Profile( result.getJSONObject(0) );
+                        }catch (JSONException e){
+                            Log.d("GetProfile", e.getLocalizedMessage());
+                        }
+                    }
+                }
+        , tryst.getOther(user) );
 
     }
 
@@ -48,34 +100,4 @@ public class ContactInfo extends Activity implements MongoAdapter {
 
         return super.onOptionsItemSelected(item);
     }
-
-    /**
-     * @param result The result string returned by the HTTP request.
-     *               - Processes the MongoDB request
-     * @author Rhea Lauzon
-     */
-    public void processResult(String result)
-    {
-            if (user == null)
-            {
-                try {
-                    user = new Profile(new JSONArray(result).getJSONObject(0));
-                } catch (JSONException f) {
-                    Log.d("ProcessResult", f.getLocalizedMessage());
-                }
-                Toast.makeText(this, user.getName(), Toast.LENGTH_LONG).show();
-            } else {
-                try {
-                    Meeting m = new Meeting(new JSONArray(result).getJSONObject(0));
-                    m.setArrived(1, true);
-                    Mongo.post(new MongoAdapter() {
-                        @Override
-                        public void processResult(String result) {
-                        }
-                    }, "dates", m.toJSON());
-                } catch (JSONException g) {
-                    Log.d("ProcessResult", g.getLocalizedMessage());
-                }
-            }
-        }
-    }
+}
