@@ -1,9 +1,14 @@
 package ca.calvinrempel.firstimpressions_pof;
 
 import android.app.Activity;
+import android.app.Notification;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -124,6 +129,31 @@ public class MainActivity extends Activity {
         voiceNotifyDetails.add("late");
         voiceNotifyDetails.add("here");
         voiceNotifyDetails.add("can't come");
+
+        //add notification features
+        NotificationCompat.WearableExtender wearableExtender =
+                new NotificationCompat.WearableExtender()
+                        .setHintShowBackgroundOnly(true);
+
+        Notification notification =
+                new NotificationCompat.Builder(this)
+                        .setVibrate(new long[] {100, 250, 100, 250, 100, 25})
+                        .setLights(Color.YELLOW, 500, 500)
+                        .setSmallIcon(R.drawable.fish)
+                        .setLargeIcon(BitmapFactory.decodeResource(
+                                getResources(), R.drawable.fishes))
+                        .setColor(getResources().getColor(R.color.wallet_holo_blue_light))
+                        .setContentTitle("Your date has arrived.")
+                        .setContentText("Susan has arrived at your meeting location!")
+                        .extend(wearableExtender)
+                        .build();
+
+        NotificationManagerCompat notificationManager =
+                NotificationManagerCompat.from(this);
+
+        //fire off a notification
+        int notificationId = 1;
+        notificationManager.notify(notificationId, notification);
     }
 
 
