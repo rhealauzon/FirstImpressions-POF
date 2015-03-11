@@ -33,6 +33,7 @@ public class Meeting {
             id = obj.getJSONObject("_id").getString("$oid");
             loc = obj.getJSONArray("location");
             place = new LatLng( loc.getDouble(0), loc.getDouble(1));
+            // Split YYYY-MM-DD-HH-mm into parts
             dateTime = obj.getString( "time" ).split( "-" );
             time.set(
                     Integer.parseInt(dateTime[0]),    // Year
@@ -49,25 +50,47 @@ public class Meeting {
         }
     }
 
-    public void setNearby( int id, boolean near )
+    public void isNearby( Profile p, boolean near )
     {
-        if( user1.id == id )
+        if( user1.id == p.getId() )
             user1.nearby = near;
-        else if( user2.id == id )
+        else if( user2.id == p.getId() )
             user2.nearby = near;
-        else
-            throw new IllegalArgumentException( "User id is not going on this date" );
     }
 
-    public void setArrived( int id, boolean arrive )
+
+    public boolean isNearby( Profile p  )
     {
-        if( user1.id == id )
-            user1.arrived = arrive;
-        else if( user2.id == id )
-            user2.arrived = arrive;
-        else
-            throw new IllegalArgumentException( "User id is not going on this date" );
+        if( user1.id == p.getId() )
+            return user1.nearby;
+        else if( user2.id == p.getId() )
+            return user2.nearby;
+        else // We shouldn't get here
+            return false;
     }
+
+    public void hasArrived( Profile p, boolean arrive )
+    {
+        if( user1.id == p.getId() )
+            user1.arrived = arrive;
+        else if( user2.id == p.getId() )
+            user2.arrived = arrive;
+    }
+
+    public boolean hasArrived( Profile p )
+    {
+        if( user1.id == p.getId() )
+            return user1.arrived;
+        else if( user2.id == p.getId() )
+            return user2.arrived;
+        else // We shouldn't get here
+            return false;
+
+    }
+
+
+
+
 
     public JSONObject toJSON()
     {
@@ -100,6 +123,7 @@ public class Meeting {
             tempArr.put( user1.toJSON() );
             tempArr.put( user2.toJSON() );
             obj.put( "users", tempArr );
+
         }catch (JSONException e){
             Log.d( "Meeting.toJSON", e.getLocalizedMessage() );
         }

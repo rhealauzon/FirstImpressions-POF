@@ -9,9 +9,10 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -35,7 +36,7 @@ import java.net.URLEncoder;
  * Class methods do not have mechanism for all the optional parameters illustrated in the
  * documentation, but can be easily modified to suit the needs of the application.
  *
- * Any Activities or Classes wishing to use this class must implement the MongoAdapter Interface
+ * Any Activities or Classes wishing to use this class must implement the MongoReceiver Interface
  * and pass themselves as the first parameter in each of the methods.
  *
  * @author Nav Bhatti
@@ -43,128 +44,93 @@ import java.net.URLEncoder;
  */
 public class Mongo {
 
+    // Base mongolab URL
     private static final String BASE_URL = "https://api.mongolab.com/api/1/databases/";
+
+    // API_KEY from the database user's account
     private static final String API_KEY = "bup2ZBWGDC-IlRrpRsjTtJqiM_QKSmKa";
+
+    // Name of the database to access
     private static final String DB_NAME = "sandbox";
 
+    // Name of collection containing user profiles
+    private static final String COLL_PROFILES = "users";
+
+    //Name of collection containing meetings between users
+    private static final String COLL_MEETINGS = "dates";
 
     /**
      * Get the document with the given id from the given collection.
-     * @param context context containing the processResult() method to handle the result
-     * @param collection collection to search
-     * @param id unique id of document
+     *
+     * @param handler handler containing the process() method to handle the result
+     * @param id unique id of Profile
      */
-    public static void get( MongoAdapter context, String collection, int id  )
+    public static void getProfile( MongoReceiver handler, int id  )
     {
         String url = "";
         try {
+            // Build the URL
             url = BASE_URL
                     + DB_NAME
-                    + "/collections/" + collection + "?"
+                    + "/collections/" + COLL_PROFILES + "?"
                     + URLEncoder.encode("q={\"_id\":\"" + id + "\"}", "UTF-8")
-                    + "&fo=true" + "&apiKey=" + API_KEY;
-        }
-        catch( UnsupportedEncodingException e){
-            Log.d( "URL", e.getLocalizedMessage() );
-        }
-        Log.d( "URL", url );
-        new GetTask( context ).execute(url);
-    }
-
-    /**
-     * Get the meetings pertaining to the given profile
-     * @param context context containing the processResult() method to handle the result
-     * @param p profile of person whose meetings should be returned
-     */
-    public static void getMeetings( MongoAdapter context, Profile p )
-    {
-        String url = "";
-        try {
-            url = BASE_URL
-                    + DB_NAME
-                    + "/collections/dates?"
-                    + URLEncoder.encode("q={\"users\":\"{$elemMatch\":{\"id\":" + p.getId() + "}}}", "UTF-8")
                     + "&apiKey=" + API_KEY;
         }
         catch( UnsupportedEncodingException e){
             Log.d( "URL", e.getLocalizedMessage() );
         }
         Log.d( "URL", url );
-        new GetTask( context ).execute(url);
+        new GetTask( handler ).execute(url);
     }
 
     /**
-     * Get all documents from the given collection
-     * @param context context containing the processResult() method to handle the result
-     * @param collection collection to search
-     */
-    public static void get( MongoAdapter context, String collection )
-    {
-       String url = BASE_URL
-                    + DB_NAME
-                    + "/collections/" + collection + "?"
-                    + "apiKey=" + API_KEY;
-        new GetTask( context ).execute(url);
-    }
-
-    /**
-     * Execute an HTTP POST request as a separate thread using an AsyncTask
-     * POST requests are used to create new documents
+     * Get the meetings pertaining to the given profile
      *
-     * @param context MongoAdapter Interface to be used as context for the request
-     * @param collection Name of the collection to POST to
-     * @param document JSONObject to place in the given collection
+     * @param handler handler containing the process() method to handle the result
+     * @param p profile of person whose meetings should be returned
      */
-    public static void post( MongoAdapter context, String collection, JSONObject document )
+    public static void getMeetings( MongoReceiver handler, int id )
     {
-        String url = BASE_URL
-                + DB_NAME
-                + "/collections/" + collection
-                + "?apiKey=" + API_KEY;
-
-        new PostTask().execute( url, document.toString() );
-    }
-
-    /**
-     * Execute an HTTP PUT request as a separate thread using an AsyncTask
-     * PUT requests are used to update documents
-     *
-     * @param context MongoAdapter Interface to be used as context for the request
-     * @param collection Name of the collection to PUT into
-     * @param query Only documents matching the properties in query will be updated
-     * @param newValue New key/value pairs to add to document, or new value to update if key exists
-     */
-    public static void put( MongoAdapter context, String collection, JSONObject query, JSONObject newValue )
-    {
-        String url = BASE_URL
-                + DB_NAME
-                + "/collections/" + collection
-                + "?apiKey=" + API_KEY;
-
-        String queryStr = "";
+        String url = "";
         try {
-            queryStr = "&q=" + URLEncoder.encode( query.toString(), "UTF-8" );
-        }catch (UnsupportedEncodingException e ){
-            Log.d("Mongo.Put", e.getLocalizedMessage() );
+            // Build the URL
+            url = BASE_URL
+                    + DB_NAME
+                    + "/collections/" + COLL_MEETINGS + "?"
+                    + URLEncoder.encode("q={\"users\":\"{$elemMatch\":{\"id\":" + id + "}}}", "UTF-8")
+                    + "&apiKey=" + API_KEY;
         }
+        catch( UnsupportedEncodingException e){
+            Log.d( "URL", e.getLocalizedMessage() );
+        }
+        Log.d( "URL", url );
+        new GetTask( handler ).execute(url);
+    }
 
-        url += queryStr;
+    /**
+     * Update or create the given meeting in the database
+     * @param m The meeting to be updated
+     */
+    public static void createOrUpdate( Meeting m )
+    {
+        String url = BASE_URL
+                + DB_NAME
+                + "/collections/" + COLL_MEETINGS
+                + "?apiKey=" + API_KEY;
 
-        String update = "{\"$set\":" + newValue.toString() + "}";
-
-        new PutTask().execute( url, update );
+        new PostTask().execute( url, m.toJSON().toString() );
     }
 
     /**
      * Execute an HTTP DELETE request on a separate thread using an AsyncTask
      * DELETE requests are used to delete documents
      *
-     * @param context MongoAdapter Interface to be used as context for the request
      * @param collection Name of the collection to delete from
      * @param id "_id" value of the document to delete
      */
-    public static void delete( MongoAdapter context, String collection, String id )
+    public static void delete( String collection, String id )
     {
+        // Build the URL
         String url = BASE_URL
                 + DB_NAME
                 + "/collections/" + collection
@@ -172,6 +138,39 @@ public class Mongo {
                 + "?apiKey=" + API_KEY;
 
         new DeleteTask().execute( url );
+    }
+
+    /**
+     * Get all documents from the given collection
+     * @param handler handler containing the process() method to handle the result
+     * @param collection collection to search
+     */
+    public static void get( MongoReceiver handler, String collection )
+    {
+        // Build the URL
+        String url = BASE_URL
+                + DB_NAME
+                + "/collections/" + collection + "?"
+                + "apiKey=" + API_KEY;
+        new GetTask( handler ).execute(url);
+    }
+
+    /**
+     * Execute an HTTP POST request as a separate thread using an AsyncTask
+     * POST requests are used to create and update documents
+     *
+     * @param collection Name of the collection to POST to
+     * @param document JSONObject to place in the given collection
+     */
+    public static void post(  String collection, JSONObject document )
+    {
+        // Build the URL
+        String url = BASE_URL
+                + DB_NAME
+                + "/collections/" + collection
+                + "?apiKey=" + API_KEY;
+
+        new PostTask().execute( url, document.toString() );
     }
 
     /**
@@ -202,7 +201,7 @@ public class Mongo {
     /**
      * A new instance of the classes below will be created and executed Asynchronously
      * for the corresponding HTTP request verbs. In the case of a GetTask, a result String will
-     * be passed to the processResult method of the given context via the onPostExecute() method.
+     * be passed to the process method of the given handler via the onPostExecute() method.
      *
      * The other 3 tasks have empty onPostExecute() methods, but these can be modified to return
      * status strings or other debugging information.
@@ -210,11 +209,11 @@ public class Mongo {
     private static class GetTask
             extends AsyncTask<String, Void, String>   // params, progress, result
     {
-        private final MongoAdapter context;
+        private final MongoReceiver handler;
 
-        public GetTask(final MongoAdapter c)
+        public GetTask(final MongoReceiver c)
         {
-            context = c;
+            handler = c;
         }
 
         @Override
@@ -272,7 +271,11 @@ public class Mongo {
         {
             if (result != null)
             {
-                context.processResult(result);
+                try {
+                    handler.process( new JSONArray( result ) );
+                }catch ( JSONException e ){
+                    Log.d( "GetTask", e.getLocalizedMessage() );
+                }
             }
         }
 
@@ -327,65 +330,6 @@ public class Mongo {
             {
                 Log.d("InputStream", ex.getLocalizedMessage());
             }
-
-            return (null);
-        }
-
-        @Override
-        protected void onPostExecute(final String result){}
-
-    }
-
-    private static class PutTask
-            extends AsyncTask<String, Void, String>   // params, progress, result
-    {
-
-        @Override
-        protected String doInBackground(final String... params)
-        {
-            InputStream inputStream;
-            String      result;
-
-            if(params.length != 2)
-            {
-                throw new IllegalArgumentException("You must provide 2 arguments");
-            }
-
-            inputStream = null;
-
-            try
-            {
-                final HttpClient httpclient;
-                final HttpPut httpPut;
-                final HttpResponse httpResponse;
-
-                httpclient   = new DefaultHttpClient();
-                httpPut      = new HttpPut(params[0]);
-                httpPut.setEntity( new StringEntity(params[1]) );
-                httpPut.setHeader( "Content-Type", "application/json");
-                httpResponse = httpclient.execute(httpPut);
-                inputStream  = httpResponse.getEntity().getContent();
-
-                if(inputStream != null)
-                {
-                    result = convertStreamToString(inputStream);
-                }
-                else
-                {
-                    result = null;
-                }
-
-                return (result);
-            }
-            catch(final ClientProtocolException ex)
-            {
-                Log.d("InputStream", ex.getLocalizedMessage());
-            }
-            catch(final IOException ex)
-            {
-                Log.d("InputStream", ex.getLocalizedMessage());
-            }
-            catch ( final Exception e ){ e.printStackTrace(); }
 
             return (null);
         }

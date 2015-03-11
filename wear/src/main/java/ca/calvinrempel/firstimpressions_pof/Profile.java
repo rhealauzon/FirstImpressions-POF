@@ -16,6 +16,7 @@ import java.util.TreeSet;
  * Created by Nav on 3/10/2015.
  */
 public class Profile {
+    
     // List of likes a profile contains
     public static final String[] LIKES = { "movies", "tv", "music", "books", "food" };
 
@@ -23,6 +24,7 @@ public class Profile {
     private String name; // Full name of user
     private String gender; // Gender of user 'male' or 'female'
     private Calendar birthDate; // Date of birth in YYYY-MM-DD format
+    private String phone; // Phone number
     private HashMap<String, TreeSet<String>> likes; // List of likes mapped to each type of like
     private URL picture; // URL to a picture of the user
 
@@ -38,21 +40,26 @@ public class Profile {
             id = obj.getInt("_id");
             name = obj.getString("name");
             gender = obj.getString("gender");
+            phone = obj.getString("phone");
             // Split the yyyy-mm-dd date format
             date = obj.getString( "birthdate" ).split("-");
             picture = new URL( obj.getString("picture") );
             birthDate.set(
-                    Integer.parseInt(date[0]),
-                    Integer.parseInt(date[1])-1, // Month is 0 based
-                    Integer.parseInt(date[2])
+                    Integer.parseInt(date[0]),      // Year
+                    Integer.parseInt(date[1])-1,    // Month is 0 based
+                    Integer.parseInt(date[2])       // Day
             );
+
             // Populate the likes with values
             for (int i = 0; i < LIKES.length; i++) {
                 likeArray = obj.getJSONArray(LIKES[i]);
                 likeList = new TreeSet<String>();
+
+                // Iterate through a single type of like
                 for (int j = 0; j < likeArray.length(); j++) {
                     likeList.add(likeArray.getString(j));
                 }
+
                 likes.put( LIKES[i], likeList );
             }
         }catch ( JSONException e ){

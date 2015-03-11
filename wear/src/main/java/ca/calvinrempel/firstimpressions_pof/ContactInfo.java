@@ -12,7 +12,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 
-public class ContactInfo extends Activity implements MongoAdapter {
+public class ContactInfo extends Activity {
     private Profile user;
 
     @Override
@@ -21,7 +21,19 @@ public class ContactInfo extends Activity implements MongoAdapter {
         setContentView(R.layout.activity_contact_info);
 
         //fetch the user from the database
-        Mongo.get(this, "users", 1);
+        Mongo.getProfile(
+                new MongoReceiver() {
+                     @Override
+                     public void process(JSONArray result) {
+                         try {
+                             user = new Profile(new JSONArray(result).getJSONObject(0));
+                         } catch (JSONException f) {
+                             Log.d("ProcessResult", f.getLocalizedMessage());
+                         }
+                         Toast.makeText(getBaseContext(), user.getName(), Toast.LENGTH_LONG).show();
+                     }
+                 }
+                ,1);
 
         TextView name = (TextView) findViewById(R.id.name);
         name.setText(name.getText() + user.getName());
@@ -50,34 +62,4 @@ public class ContactInfo extends Activity implements MongoAdapter {
 
         return super.onOptionsItemSelected(item);
     }
-
-    /**
-     * @param result The result string returned by the HTTP request.
-     *               - Processes the MongoDB request
-     * @author Rhea Lauzon
-     */
-    public void processResult(String result)
-    {
-            if (user == null)
-            {
-                try {
-                    user = new Profile(new JSONArray(result).getJSONObject(0));
-                } catch (JSONException f) {
-                    Log.d("ProcessResult", f.getLocalizedMessage());
-                }
-                Toast.makeText(this, user.getName(), Toast.LENGTH_LONG).show();
-            } else {
-                try {
-                    Meeting m = new Meeting(new JSONArray(result).getJSONObject(0));
-                    m.setArrived(1, true);
-                    Mongo.post(new MongoAdapter() {
-                        @Override
-                        public void processResult(String result) {
-                        }
-                    }, "dates", m.toJSON());
-                } catch (JSONException g) {
-                    Log.d("ProcessResult", g.getLocalizedMessage());
-                }
-            }
-        }
-    }
+}
