@@ -11,10 +11,16 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.wearable.DataApi;
+import com.google.android.gms.wearable.DataEvent;
+import com.google.android.gms.wearable.DataEventBuffer;
+import com.google.android.gms.wearable.Wearable;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements DataApi.DataListener {
 
     private TextView mTextView;
 
@@ -67,6 +73,8 @@ public class MainActivity extends Activity {
 
     /** A list of all Notify details */
     private List<String> voiceNotifyDetails = new ArrayList<>();
+
+    private GoogleApiClient googleClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -133,6 +141,18 @@ public class MainActivity extends Activity {
         voiceNotifyDetails.add("late");
         voiceNotifyDetails.add("here");
         voiceNotifyDetails.add("can't come");
+
+        // Set up google api client
+        googleClient = new GoogleApiClient.Builder(this)
+                .addApi(Wearable.API)
+                .build();
+
+        Wearable.DataApi.addListener( googleClient, this );
+    }
+
+    public void onDataChanged(DataEventBuffer dataEvents) {
+        for(DataEvent event : dataEvents)
+            Toast.makeText( this, event.getDataItem().getUri().toString(), Toast.LENGTH_SHORT).show();
     }
 
     /**

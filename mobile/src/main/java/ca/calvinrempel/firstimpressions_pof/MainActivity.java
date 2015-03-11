@@ -12,6 +12,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.wearable.PutDataRequest;
+import com.google.android.gms.wearable.Wearable;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 
@@ -19,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class MainActivity extends Activity
+public class MainActivity extends Activity implements MongoReceiver
 {
     private FencedMeetingManager meetingManager;
 
@@ -63,6 +67,9 @@ public class MainActivity extends Activity
 
     /** A list of all Notify details */
     private List<String> voiceNotifyDetails = new ArrayList<>();
+
+    // Google API Client
+    GoogleApiClient googleClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,6 +121,10 @@ public class MainActivity extends Activity
         voiceNotifyDetails.add("late");
         voiceNotifyDetails.add("here");
         voiceNotifyDetails.add("can't come");
+
+        googleClient = new GoogleApiClient.Builder(this)
+                .addApi(Wearable.API)
+                .build();
     }
 
     public void onResume()
@@ -364,26 +375,25 @@ public class MainActivity extends Activity
                 } ,id );
     }
 
+    private Meeting m;
     // SAMPLE CODE FOR GETTING A MEETING BY USER ID
     public void getMeeting( View v )
     {
         // Get the id number from the EditText box
         int id = Integer.parseInt(((EditText) findViewById(R.id.txtId)).getText().toString());
 
-        // Result TextView
-        final TextView resultText = (TextView)findViewById(R.id.txtResult);
-
         // getMeetings takes a handler and an integer ID for the user you're searching for
-        Mongo.getMeetings(
-                // Anonymous inner class handler for result of Mongo call
-                new MongoReceiver() {
-                    @Override
-                    public void process(JSONArray result) {
-                        try {
-                            // Set the result as the first object in the returned array
-                            resultText.setText(result.getJSONObject(0).toString(2));
-                        }catch (JSONException e){}
-                    }
-                } ,id );
+        Mongo.getMeetings( this, id );
+    }
+
+    @Override
+    public void process(JSONArray result) {
+        PutDataRequest request;
+        try {
+            // Set the result as the first object in the returned array
+            m = new Meeting(result.getJSONObject(0));
+            request = PutDataRequest.create("meet/one");
+            request.setData( m.serialize() );
+        }catch (Exception e){}
     }
 }

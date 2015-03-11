@@ -8,6 +8,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -15,7 +21,7 @@ import java.util.List;
 /**
  * Created by Nav on 3/10/2015.
  */
-public class Meeting {
+public class Meeting implements Serializable{
 
     private String id;
     private Calendar time;
@@ -189,5 +195,18 @@ public class Meeting {
             }
             return obj;
         }
+    }
+
+    public byte[] serialize() throws IOException {
+        ByteArrayOutputStream b = new ByteArrayOutputStream();
+        ObjectOutputStream o = new ObjectOutputStream(b);
+        o.writeObject(this);
+        return b.toByteArray();
+    }
+
+    public static Meeting deserialize(byte[] bytes) throws IOException, ClassNotFoundException {
+        ByteArrayInputStream b = new ByteArrayInputStream(bytes);
+        ObjectInputStream o = new ObjectInputStream(b);
+        return (Meeting)o.readObject();
     }
 }
