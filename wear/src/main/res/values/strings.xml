@@ -8,11 +8,14 @@
     <string name="dateInfo">Date Info</string>
     <string name="contactInfo">Contact Info</string>
     <string name="likes">Likes</string>
-    <color name="field_colors">#81c5df</color>
     <string name="title_activity_contact_info">ContactInfo</string>
-
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_likes">Likes</string>
     <string name="title_activity_likes_details">LikesDetails</string>
+    <string name="title_activity_date_info">DateInfo</string>
+
+    <!-- Colors -->
+    <color name="field_colors">#6DC7E1</color>
+    <string name="title_activity_face">Face</string>
 </resources>

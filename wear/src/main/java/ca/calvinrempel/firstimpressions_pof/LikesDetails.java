@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -28,35 +26,19 @@ public class LikesDetails extends Activity
         TextView title = (TextView) findViewById(R.id.likeCategory);
 
         Intent i = getIntent();
-        title.setText(i.getStringExtra("category") + " Likes:");
+        title.setText(i.getStringExtra("category"));
 
 
         //TODO:
         //Populate this from the JSON
         String[] categories = new String[] {"Movies", "Books", "Songs" };
 
-        //define a new adapter
+        //define a new adapter for the list
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.list_item_details, R.id.textView, categories);
 
         //assign the adapter to the listView
         listView.setAdapter(adapter);
-
-        //set the on click listener
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            @Override
-            //On click listener for the items clicked
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-            {
-                //Item index
-                int itemPosition = position;
-
-                //Value of the item clicked
-                String  itemValue = (String) listView.getItemAtPosition(position);
-
-            }
-        });
-    }
+   }
 
 
     @Override
