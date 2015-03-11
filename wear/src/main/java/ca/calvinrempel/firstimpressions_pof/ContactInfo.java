@@ -17,7 +17,7 @@ public class ContactInfo extends Activity {
     // You!
     private Profile user;
 
-    // Hot date you have coming up
+    //Date you have coming up
     private Meeting tryst;
 
     // User you're on a date with
@@ -51,9 +51,6 @@ public class ContactInfo extends Activity {
                  }
                 ,1);
 
-        TextView name = (TextView) findViewById(R.id.name);
-        name.setText(name.getText() + user.getName());
-
         // Get the meeting from the database
         Mongo.getMeetings(
                 new MongoReceiver() {
@@ -81,6 +78,10 @@ public class ContactInfo extends Activity {
                     }
                 }
         , tryst.getOther(user) );
+
+
+        TextView name = (TextView) findViewById(R.id.name);
+        name.setText(name.getText() + other.getName());
 
     }
 
