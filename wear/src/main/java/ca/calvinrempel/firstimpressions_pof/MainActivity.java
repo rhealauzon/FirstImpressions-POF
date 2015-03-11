@@ -85,6 +85,8 @@ public class MainActivity extends Activity {
 
                 // Set the custom fonts for this page
                 FontManager.setFont(stub.getContext(), (Button) findViewById(R.id.buttonDateInfo), "biko.otf");
+                FontManager.setFont(stub.getContext(), (Button) findViewById(R.id.buttonContactInfo), "biko.otf");
+                FontManager.setFont(stub.getContext(), (Button) findViewById(R.id.buttonLikes), "biko.otf");
             }
         });
 

@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 
 public class Likes extends Activity {
@@ -19,6 +20,9 @@ public class Likes extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_likes);
+
+        // Set the custom Title font
+        FontManager.setFont(this, (TextView) findViewById(R.id.likeCategory), "biko.otf");
 
         //get listView object from XML
         listView = (ListView) findViewById(R.id.likes_list);

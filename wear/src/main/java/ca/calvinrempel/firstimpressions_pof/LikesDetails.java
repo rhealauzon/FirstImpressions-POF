@@ -27,6 +27,7 @@ public class LikesDetails extends Activity
 
         Intent i = getIntent();
         title.setText(i.getStringExtra("category"));
+        FontManager.setFont(this, title, "biko.otf");
 
 
         //TODO:

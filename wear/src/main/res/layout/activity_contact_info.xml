@@ -85,17 +85,6 @@
                     android:textColor="@color/field_colors"
                     />
 
-
-                <TextView
-                    android:id="@+id/family"
-                    android:layout_height="0dp"
-                    android:layout_width="match_parent"
-                    android:text="Kids: None"
-                    android:layout_weight="0.5"
-                    android:layout_marginTop="10dp"
-                    android:textColor="@color/field_colors"
-                    />
-
             </LinearLayout>
         </FrameLayout>
     </ScrollView>

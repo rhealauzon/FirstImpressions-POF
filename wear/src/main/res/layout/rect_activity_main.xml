@@ -74,6 +74,7 @@
                     android:text="@string/contactInfo"
                     android:background="@drawable/blue_rounded"
                     android:textColor="@android:color/white"
+                    android:id="@+id/buttonContactInfo"
                     android:onClick="contactInfo"
                     android:layout_marginBottom="10px"
                    />
@@ -85,6 +86,7 @@
                     android:text="@string/likes"
                     android:onClick="likes"
                     android:background="@drawable/blue_rounded"
+                    android:id="@+id/buttonLikes"
                     android:textColor="@android:color/white"
                     android:layout_marginBottom="10px"/>
                 </LinearLayout>
