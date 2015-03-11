@@ -4,15 +4,13 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.wearable.Wearable;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -21,9 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class MainActivity extends Activity {
-
-    private GoogleApiClient googleClient;
+public class MainActivity extends Activity
+{
     private FencedMeetingManager meetingManager;
 
     /** The request code used by this application for voice command */
@@ -71,13 +68,6 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        meetingManager = null;
-
-        googleClient = new GoogleApiClient.Builder(this)
-                .addApi(Wearable.API)
-                .build();
-
-        googleClient.connect();
 
         // Create the waiting service intent
         Intent msgIntent = new Intent(this, WaitLocationService.class);
@@ -126,6 +116,22 @@ public class MainActivity extends Activity {
         voiceNotifyDetails.add("can't come");
     }
 
+    public void onResume()
+    {
+        super.onResume();
+
+        // Ensure Geofencing is available on app start/restart
+        if (meetingManager == null)
+        {
+            meetingManager = new FencedMeetingManager(new GeofenceEventListener());
+        }
+
+        while(!meetingManager.startGeofencing(this))
+        {
+            Intent gpsOptionsIntent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+            startActivity(gpsOptionsIntent);
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -154,30 +160,24 @@ public class MainActivity extends Activity {
      */
     private class GeofenceEventListener implements GeofenceListenerCallbacks
     {
-
-        @Override
-        public void onEnter(String fenceId) {
-
+        public void onNowHere(FencedMeeting meeting)
+        {
+            Log.d("GEO", "User: " + meeting.getOtherUserId() + " now here.");
         }
 
-        @Override
-        public void onExit(String fenceId) {
-
+        public void onNoLongerHere(FencedMeeting meeting)
+        {
+            Log.d("GEO", "User: " + meeting.getOtherUserId() + " no longer here.");
         }
 
-        @Override
-        public void onConnected() {
-
+        public void onNowNear(FencedMeeting meeting)
+        {
+            Log.d("GEO", "User: " + meeting.getOtherUserId() + " now near.");
         }
 
-        @Override
-        public void onDisconnected() {
-
-        }
-
-        @Override
-        public void onError() {
-
+        public void onNoLongerNear(FencedMeeting meeting)
+        {
+            Log.d("GEO", "User: " + meeting.getOtherUserId() + " no longer near.");
         }
     }
 

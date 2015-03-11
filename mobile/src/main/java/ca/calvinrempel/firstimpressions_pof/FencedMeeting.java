@@ -1,6 +1,6 @@
 package ca.calvinrempel.firstimpressions_pof;
 
-import android.location.Location;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.util.Calendar;
 
@@ -12,8 +12,8 @@ import java.util.Calendar;
 public class FencedMeeting
 {
     private Calendar meetingTime;
-    private Location location;
-    private boolean inMeeting;
+    private LatLng location;
+    private boolean near, here;
     private int otherUserId;
 
     /**
@@ -23,31 +23,54 @@ public class FencedMeeting
      * @param location the location of the meeting
      * @param otherUserId the ID of the user being met with
      */
-    public FencedMeeting(Calendar meetingTime, Location location, int otherUserId)
+    public FencedMeeting(Calendar meetingTime, LatLng location, int otherUserId)
     {
         this.meetingTime = meetingTime;
         this.location = location;
         this.otherUserId = otherUserId;
+        near = false;
+        here = false;
     }
 
     /**
-     * Set whether or not the user is currently in the meeting.
+     * Set whether the user is at the meeting or not
      *
-     * @param inMeeting whether the user is currently in the meeting or not
+     * @param here true to indicate that the user has arrived, false to indicate that the user as left
      */
-    public void setInMeeting(boolean inMeeting)
+    public void setIsHere(boolean here)
     {
-        this.inMeeting = inMeeting;
+        this.here = here;
     }
 
     /**
-     * Check if the user is currently in the meeting or not.
+     * Set whether the user is near the meeting or not
      *
-     * @return true if the user is in the meeting, false if the user is not in the meeting.
+     * @param near true to indicate that the user is near the meeting, false to indicate that they have
+     *             left the vicinity.
      */
-    public boolean isMeeting()
+    public void setIsNear(boolean near)
     {
-        return this.inMeeting;
+        this.near = near;
+    }
+
+    /**
+     * Check if the user is at the meeting or not
+     *
+     * @return true if the user is here, false if not
+     */
+    public boolean isHere()
+    {
+        return here;
+    }
+
+    /**
+     * Check if the user near the meeting
+     *
+     * @return true if the user is near the meeting, false if not
+     */
+    public boolean isNear()
+    {
+        return near;
     }
 
     /**
@@ -65,7 +88,7 @@ public class FencedMeeting
      *
      * @return the location of the meeting
      */
-    public Location getLocation()
+    public LatLng getLocation()
     {
         return this.location;
     }
