@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -21,6 +22,9 @@ public class ContactInfo extends Activity implements MongoAdapter {
 
         //fetch the user from the database
         Mongo.get(this, "users", 1);
+
+        TextView name = (TextView) findViewById(R.id.name);
+        name.setText(name.getText() + user.getName());
 
     }
 
@@ -52,13 +56,10 @@ public class ContactInfo extends Activity implements MongoAdapter {
      *               - Processes the MongoDB request
      * @author Rhea Lauzon
      */
-    public void processResult(String result) {
-        Profile p = null;
-        try {
-            p = new Profile(new JSONArray(result).getJSONObject(0));
-        } catch (JSONException e) {
-            Log.d("ProcessResult", e.getLocalizedMessage());
-            if (user == null) {
+    public void processResult(String result)
+    {
+            if (user == null)
+            {
                 try {
                     user = new Profile(new JSONArray(result).getJSONObject(0));
                 } catch (JSONException f) {
@@ -78,8 +79,5 @@ public class ContactInfo extends Activity implements MongoAdapter {
                     Log.d("ProcessResult", g.getLocalizedMessage());
                 }
             }
-            Toast.makeText(this, p.getName(), Toast.LENGTH_LONG).show();
-
         }
     }
-}
