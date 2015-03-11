@@ -87,7 +87,7 @@ public class Mongo {
      * Get the meetings pertaining to the given profile
      *
      * @param handler handler containing the process() method to handle the result
-     * @param p profile of person whose meetings should be returned
+     * @param id profile id of person whose meetings should be returned
      */
     public static void getMeetings( MongoReceiver handler, int id )
     {
